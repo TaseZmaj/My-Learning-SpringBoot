@@ -39,6 +39,7 @@ public class ThymeleafCategoryServlet extends HttpServlet {
         context.setVariable("ipAddress", req.getRemoteAddr());
         context.setVariable("clientAgent", req.getHeader("User-Agent"));
         context.setVariable("categories", this.categoryService.listCategories());
+        context.setVariable("errorMessage", req.getParameter("errorMessage"));
 
         springTemplateEngine.process("categories.html", context, resp.getWriter());
     }
@@ -47,7 +48,12 @@ public class ThymeleafCategoryServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String categoryName = req.getParameter("name");
         String categoryDescription = req.getParameter("description");
-        categoryService.create(categoryName, categoryDescription);
+
+        try{
+            categoryService.create(categoryName, categoryDescription);
+        }catch(Exception e){
+            resp.sendRedirect("/servlet/thymeleaf-category-servlet?errorMessage=invalid_input_for_category");
+        }
         resp.sendRedirect("/servlet/thymeleaf/category");
     }
 }

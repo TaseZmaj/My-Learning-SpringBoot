@@ -20,5 +20,8 @@
     <br/><br/>
     <input type="submit"/>
 </form>
+<div th:if="${errorMessage != null}">
+    <span th:text="${errorMessage}" style="color: red;"></span>
+</div>
 </body>
 </html>
