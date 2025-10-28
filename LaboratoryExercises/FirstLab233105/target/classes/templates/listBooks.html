@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Book Reservation - Welcome and choose a Book</title>
+    <style>
+        body {
+            width: 800px;
+            margin: auto;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .book-option {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .book-option:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to our Book Reservation App</h1>
+</header>
+<main>
+    <form action="" method="GET">
+        <h2>Search for books:</h2>
+        <label for="searchQuery">
+            <span>Book title: </span>
+            <input type="text" name="searchQuery" id="searchQuery">
+        </label>
+        <br/>
+        <label for="rating">
+            <span>Choose rating: </span>
+            <input type="number" min="1" max="5" name="rating" id="rating">
+        </label>
+        <br/>
+        <label for="search">
+            <input type="submit"  name="search" id="search" value="Search">
+        </label>
+    </form>
+    <form action="/bookReservation" method="POST">
+        <h2>Choose a book:</h2>
+        <ul style="list-style-type:none;">
+            <li th:each="book : ${booksList}" style="padding-top: 7px; padding-bottom: 7px;">
+                <label th:for="${book.getTitle()}">
+                    <input
+                        th:id="${book.getTitle()}"
+                        type="radio"
+                        name="bookTitle"
+                        th:value="${book.getTitle()}"
+                    />
+                    <span th:text="'Title: ' + ${book.getTitle()} + ', Genre: ' + ${book.getGenre()} + ', Rating: ' + ${book.getAverageRating()}"></span>
+                </label>
+            </li>
+        </ul>
+        <h2>Enter your information:</h2>
+
+        <label for="readerName">Your Name:</label>
+        <input type="text" name="readerName" id="readerName" required /><br/>
+
+        <label for="readerAddress">Your Address:</label>
+        <input type="text" name="readerAddress" id="readerAddress" required><br/>
+
+        <h2><label for="numberOfCopies">number of copies: </label></h2>
+        <input type="number" name="numCopies" min="1" max="5" id="numberOfCopies" required /><br/>
+        <br/>
+
+        <input type="hidden" name="userIpAddress" th:value="${userIpAddress}" />
+
+        <input type="submit"  value="Reserve Book">
+    </form>
+</main>
+</body>
+</html>
