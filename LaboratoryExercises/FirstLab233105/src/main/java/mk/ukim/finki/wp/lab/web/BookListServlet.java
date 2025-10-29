@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import mk.ukim.finki.wp.lab.model.Book;
+import mk.ukim.finki.wp.lab.service.BookReservationService;
 import mk.ukim.finki.wp.lab.service.BookService;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -19,10 +20,12 @@ import java.util.List;
 public class BookListServlet extends HttpServlet {
     private final SpringTemplateEngine springTemplateEngine;
     private final BookService bookService;
+    private final BookReservationService bookReservationService;
 
-    public BookListServlet(SpringTemplateEngine springTemplateEngine, BookService bookService) {
+    public BookListServlet(SpringTemplateEngine springTemplateEngine, BookService bookService, BookReservationService bookReservationService) {
         this.springTemplateEngine = springTemplateEngine;
         this.bookService = bookService;
+        this.bookReservationService = bookReservationService;
     }
 
     @Override
@@ -36,6 +39,7 @@ public class BookListServlet extends HttpServlet {
         //query-to gore, pa ke krene error serverot i vrakja status 500
         String searchQuery = req.getParameter("searchQuery") == null ? "" : req.getParameter("searchQuery");
         String rating  = req.getParameter("rating") == null || req.getParameter("rating").isEmpty() ? "0.0" : req.getParameter("rating");
+        context.setVariable("reservations", bookReservationService.listAll());
 
         List<Book> books = bookService.searchBooks(searchQuery, Double.parseDouble(rating));
 

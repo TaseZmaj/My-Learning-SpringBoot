@@ -25,5 +25,7 @@ public class DataHolder {
         books.add(new Book("Brave New World", "Science Fiction/Dystopian", 4.46));
         books.add(new Book("The Lord of the Rings", "Fantasy/Epic", 4.90));
         books.add(new Book("Harry Potter and the Sorcerer’s Stone", "Fantasy/Young Adult", 4.82));
+
+        reservations.add(new BookReservation("To Kill a Mockingbird", "Marko", "12345 St. Skopje", 2L));
     }
 }
