@@ -1,10 +1,14 @@
 package mk.ukim.finki.wp.lab.web;
 
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import mk.ukim.finki.wp.lab.model.Book;
 import mk.ukim.finki.wp.lab.service.BookReservationService;
 import mk.ukim.finki.wp.lab.service.BookService;
@@ -30,7 +34,7 @@ public class BookReservationServlet extends HttpServlet {
         IWebExchange webExchange = JakartaServletWebApplication
                 .buildApplication(getServletContext())
                 .buildExchange(req, resp);
-        WebContext context = new WebContext(webExchange);
+        WebContext context = new WebContext(webExchange); //ovoj context e context-ot od thymeleaf, ne e isto so ServletContext
 
         context.setVariable("bookTitle", req.getSession().getAttribute("bookTitle"));
         context.setVariable("readerName", req.getSession().getAttribute("readerName"));
@@ -50,20 +54,24 @@ public class BookReservationServlet extends HttpServlet {
         String userIpAddress = req.getParameter("userIpAddress");
 
         try{
-            req.getSession().setAttribute("bookTitle", bookTitle);
-            req.getSession().setAttribute("readerName", readerName);
-            req.getSession().setAttribute("readerAddress", readerAddress);
-            req.getSession().setAttribute("numCopies", numCopies);
-            req.getSession().setAttribute("userIpAddress", userIpAddress);
+            HttpSession session = req.getSession();
+            session.setAttribute("bookTitle", bookTitle);
+            session.setAttribute("readerName", readerName);
+            session.setAttribute("readerAddress", readerAddress);
+            session.setAttribute("numCopies", numCopies);
+            session.setAttribute("userIpAddress", userIpAddress);
 
             bookReservationService.placeReservation(bookTitle, readerName, readerAddress, Integer.parseInt(numCopies));
         }catch(Exception e){
             resp.sendRedirect("/?errorMessage=invalid_input" + e.getLocalizedMessage());
         }
-        resp.sendRedirect("/bookReservation");
-
-        //Mozesh i ova da go koristis bez da pishuvash gore req.getSession() itn itn...
-        //req.getRequestDispatcher("/bookReservation").forward(req, resp);
+        resp.sendRedirect("/bookReservation"); //ova SEKOGAS vrakja 302 status na klientot i odma posle toa pravi HTTP GET Request do "/bookReservation"
+        //Mozeshe istovo, namesto so context da go napravis so Varijabli za opseg na (mislam):
+//        req.setAttribute("bookTitle", bookTitle);
+//        req.setAttribute("readerName", readerName);
+        // ...
+//        RequestDispatcher dispatcher = req.getRequestDispatcher("/bookReservation");
+//        dispatcher.forward(req, resp); //namesto resp.sendRedirect(), go koristis forward
 
     }
 }

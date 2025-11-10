@@ -1,0 +1,47 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Categories</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+
+<!--BITNO: Key point: Thymeleaf automatically exposes the HTTP session object as ${session} in templates, so you can access
+any session attribute directly without manually passing it from the servlet.-->
+<th:block th:if="${session.user}">
+    <h2>Info about user</h2>
+    <div th:text="${session.user.getUsername()}"></div>
+    <div th:text="${session.user.getName()}"></div>
+    <div th:text="${session.user.getSurname()}"></div>
+
+    <div>
+        <a th:href="@{/logout}">logout</a>
+    </div>
+</th:block>
+<h2>Info about our request</h2>
+<span>IP Address:<th:block th:text="${ipAddress}"/> </span><br/>
+<span>Client Agent: <th:block th:text="${clientAgent}"/> </span><br/>
+<h2>Categories:</h2>
+<ul>
+    <li th:each="category : ${categories}"><th:block th:text="${category.getName()}"/></li>
+</ul>
+
+<h3>Add New Category</h3>
+<form th:action="@{/servlet/thymeleaf/category}" th:method="POST">
+    <label for="name">Name:</label><input id="name" name="name" type="text"/>
+    <br/><br/>
+    <label for="desc">Description: </label><input id="desc" name="desc" type="text"/>
+    <br/><br/>
+    <input type="submit"/>
+</form>
+<div th:if="${errorMessage != null}">
+    <span th:text="${errorMessage}" style="color: red;"></span>
+</div>
+<br>
+<div>
+    <h1>User views counter</h1>
+    <th:block>
+        <div th:text="${userViews?:0}"></div>
+    </th:block>
+</div>
+</body>
+</html>
