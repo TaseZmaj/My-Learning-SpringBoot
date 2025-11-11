@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+<!--    PAZI kako e patekata pishana - NE go pishuvash /static folderot!!! -->
+    <link rel="stylesheet" type="text/css" href="/css/main.css" >
+</head>
+<body>
+<form th:method="POST" th:action="@{/login}">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username"/><br/>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password"/><br/><br/>
+
+    <div th:if="${error != null}" class="error">
+        <div th:text="${error}"></div>
+    </div>
+
+    <input type="submit" th:value="Submit">
+</form>
+</body>
+</html>
