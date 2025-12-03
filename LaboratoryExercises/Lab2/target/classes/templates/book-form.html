@@ -1,0 +1,90 @@
+<html lang="en">
+    <head>
+        <title>Book Form</title>
+        <style>
+            body{
+                font-family: Arial, Helvetica, sans-serif;
+                width:100%;
+                height:100%;
+                overflow-x:hidden;
+                margin:0;
+                padding:0;
+            }
+            main{
+                width:100%;
+                height:100%;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+
+            }
+            form>div{
+                margin:10px 0;
+                font-weight: bold;
+
+            }
+            form h1{
+                font-size:4rem;
+            }
+            form label{
+                font-size:1.5rem;
+            }
+        </style>
+    </head>
+    <body>
+        <!--ADD FORM or UPDATE FORM -->
+        <main>
+            <form method="POST"
+                   th:action="${book != null} ? '/books/edit/' + ${book.getId()} : '/books/add'">
+            <h1>Book Form</h1>
+            <div>
+                <label for="title">Book Title</label>
+                <input type="text"
+                       id="title"
+                       name="title"
+                       th:value="${book != null ? book.getTitle() : ''}"
+                       required>
+            </div>
+
+            <div>
+                <label for="genre">Genre</label>
+                <input type="text"
+                       id="genre"
+                       name="genre"
+                       th:value="${book != null ? book.getGenre() : ''}"
+                       required>
+            </div>
+
+            <div>
+                <label for="averageRating">Average Rating</label><br/>
+                <input type="number"
+                       id="averageRating"
+                       name="averageRating"
+                       th:value="${book != null ? book.getAverageRating() : ''}"
+                       step="0.1"
+                       min="1"
+                       max="5"
+                       required>
+            </div>
+
+            <div>
+                <label for="authorId">Author</label><br/>
+                <select id="authorId" name="authorId" required>
+                    <option th:each="a : ${authors}"
+                            th:value="${a.getId()}"
+                            th:text="${a.getName()}"
+                            th:selected="${book != null && book.getAuthor() != null && book.getAuthor().getId() == a.getId()}">
+                </select>
+            </div>
+
+            <div>
+                <input type="hidden" name="bookId" th:if="${book != null}" th:value="${book.getId()}">
+            </div>
+
+            <button type="submit">Submit</button>
+            <a href="/books" type="button" class="btn btn-primary">Back to books</a>
+        </form>
+        </main>
+
+    </body>
+</html>

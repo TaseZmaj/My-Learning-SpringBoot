@@ -14,7 +14,7 @@ import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
 
-@WebServlet(name="BookReservationServlet", urlPatterns = "/bookReservation")
+//@WebServlet(name="BookReservationServlet", urlPatterns = "/bookReservation")
 public class BookReservationServlet extends HttpServlet {
     private final BookReservationService bookReservationService;
     private final SpringTemplateEngine springTemplateEngine;

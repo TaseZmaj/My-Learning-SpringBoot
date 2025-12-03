@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class InMemoryBookRepository implements BookRepository {
@@ -25,5 +26,22 @@ public class InMemoryBookRepository implements BookRepository {
             }
         }
         return targetBooks;
+    }
+
+    @Override
+    public void delete(long id) {
+        DataHolder.books.removeIf(book -> book.getId() == id);
+    }
+
+    @Override
+    public Book save(Book newBook) {
+        DataHolder.books.removeIf(book -> book.getId() == newBook.getId());
+        DataHolder.books.add(newBook);
+        return newBook;
+    }
+
+    @Override
+    public Optional<Book> findById(long id) {
+        return DataHolder.books.stream().filter(book -> book.getId() == id).findFirst();
     }
 }
