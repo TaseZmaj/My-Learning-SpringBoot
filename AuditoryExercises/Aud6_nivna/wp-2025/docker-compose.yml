@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:17.4
+    restart: always
+    environment:
+      POSTGRES_USER: web
+      POSTGRES_PASSWORD: web
+      POSTGRES_DB: web_shop
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 9999:5432
+volumes:
+  pgdata:

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Book Reservation - Welcome and choose a Book</title>
+    <style>
+        body {
+            width: 100vw;
+            margin: 10px;
+            font-family: Arial, sans-serif;
+            overflow-x:hidden;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .book-option {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .book-option:hover {
+            background-color: #f5f5f5;
+        }
+        button{
+            border:none;
+            color: #fdfdfd;
+            font-weight: bold;
+            margin-left:5px;
+            margin-right:5px;
+            border-radius:5px;
+            padding:5px;
+            cursor: pointer;
+            text-decoration:none;
+        }
+        .editBtn{
+            background-color: #ffca28;
+            float:right;
+        }
+        .deleteBtn{
+            background-color: #ef5350;
+            float: right;
+        }
+        div.buttonForm{
+            width:50%;
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to our Book Reservation App</h1>
+</header>
+
+<h1 th:if="${error != null}" th:text="'ERROR: ' + ${error}" style="color:red"></h1>
+
+<main style="width:100vw; height:100vh; display:flex; flex-direction:row;">
+    <!--BOOKS LIST AND FORM - LEFT SIDE -->
+    <div style="display:flex; flex-direction:column; height:100%; width:70%; padding-left:25px" class="right">
+        <form action="" method="GET">
+            <h2>Search for books:</h2>
+            <label for="searchQuery">
+                <span>Book title: </span>
+                <input type="text" name="searchQuery" id="searchQuery" th:value="${searchQuery}">
+            </label>
+            <br/>
+            <label for="rating">
+                <span>Choose rating: </span>
+                <input type="number" min="1" max="5" name="rating" id="rating" th:value="${rating == 0.0 ? null : rating}">
+            </label>
+            <br/>
+            <label for="search">
+                <input type="submit" id="search">
+            </label>
+        </form>
+        <div style="display:flex; flex-direction:row">
+            <div style="height:100%; width:85%; ">
+                <form action="/bookReservation" method="POST">
+                    <h2>Choose a book:</h2>
+                    <ul style="list-style-type:none;">
+                        <li th:each="book : ${booksList}" class="book-option" style="padding-top: 7px; padding-bottom: 7px;">
+                            <label th:for="${book.getTitle()}">
+                                <input
+                                        th:id="${book.getTitle()}"
+                                        type="radio"
+                                        name="bookTitle"
+                                        th:value="${book.getTitle()}"
+                                />
+                                <span th:text="|
+                                    Title: ${book.getTitle()},
+                                    Genre: ${book.getGenre()},
+                                    Rating: ${book.getAverageRating()},
+                                    Author: ${book.getAuthor().getName()} ${book.getAuthor().getSurname()}
+                                |">
+                                </span>
+                            </label>
+                        </li>
+                    </ul>
+
+                    <h2>Enter your information:</h2>
+
+                    <label for="readerName">Your Name:</label>
+                    <input type="text" name="readerName" id="readerName" required /><br/>
+
+                    <label for="readerAddress">Your Address:</label>
+                    <input type="text" name="readerAddress" id="readerAddress" required><br/>
+
+                    <h2><label for="numberOfCopies">number of copies: </label></h2>
+                    <input type="number" name="numberOfCopies" min="1" max="5" id="numberOfCopies" required /><br/>
+                    <br/>
+
+                    <input type="hidden" name="userIpAddress" th:value="${userIpAddress}" />
+
+                    <input type="submit"  value="Reserve Book">
+                </form>
+            </div>
+            <div style="height:100%; width:15%; ">
+                <br>
+                <br>
+                <ul style="list-style-type:none; margin-top:30px;">
+                    <li th:each="book : ${booksList}" style="height:20px; padding-top: 7px; padding-bottom: 7px; margin: 12px 0;">
+                        <div style="width:100%; height:100%; display:flex; flex-direction:row; align-items:center; justify-content:center;">
+                            <div class="buttonForm" style="">
+                                <form th:action="@{'/books/book-form/{id}' (id=${book.getId()})}" method="GET" style="width:100%; height:100%; margin:0; padding:5px;">
+                                    <button class="editBtn" type="submit">Edit</button>
+                                </form>
+                            </div>
+                            <div class="buttonForm">
+                                <form th:action="@{'/books/delete/{id}' (id=${book.getId()})}" method="POST" style="width:100%; height:100%; margin:0; padding:5px;">
+                                    <button class="deleteBtn" type="submit">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </li>
+                </ul>
+                <div>
+                    <a href="/books/book-form" style="margin-left:87px; text-decoration:none; color:white; font-weight:bold; border:none; border-radius:5px; background-color:lightgreen; padding:3px;">Add book</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RESERVATIONS - RIGHT SIDE-->
+    <div style="height:100%; width:30%; padding:20px;" class="left">
+        <h2>Reservations: </h2>
+        <ul>
+            <li th:each="reservation : ${reservations}" style="padding:7px; border:1px solid black; width: 400px;">
+                <p th:text="'Reader name: ' + ${reservation.getReaderName()}"></p>
+                <p th:text="'Reader address: ' + ${reservation.getReaderAddress()}"></p>
+                <p th:text="'Book title: ' + ${reservation.getBookTitle()}"></p>
+                <p th:text="'Number of copies: ' + ${reservation.getNumberOfCopies()}"></p>
+            </li>
+        </ul>
+    </div>
+
+</main>
+</body>
+</html>
