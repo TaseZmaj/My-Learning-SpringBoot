@@ -8,6 +8,7 @@ import mk.ukim.finki.wp.lab3.model.Book;
 import mk.ukim.finki.wp.lab3.repository.jpa.BookRepository;
 import mk.ukim.finki.wp.lab3.service.AuthorService;
 import mk.ukim.finki.wp.lab3.service.BookService;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<Book> searchBooks(String text, double rating) {
+    public List<Book> searchBooks(String text, Double rating) {
         if(text == null) {
             throw new IllegalArgumentException("Book title must not be null");
         }
@@ -46,12 +47,23 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public List<Book> find(String title, Double averageRating, Long authorId) {
+        Specification<Book> specification = Specification.allOf(
+                FieldFilterSpecification.filterContainsText(Book.class, "title", title),
+                FieldFilterSpecification.greaterThan(Book.class, "averageRating", averageRating),
+                FieldFilterSpecification.filterEquals(Book.class, "author.id", authorId)
+        );
+
+        return this.bookRepository.findAll(specification);
+    }
+
+    @Override
     public void delete(Long id) {
         this.bookRepository.deleteById(id);
     }
 
     @Override
-    public Book create(String title, String genre, double averageRating, Long authorId) {
+    public Book create(String title, String genre, Double averageRating, Long authorId) {
         Author author = authorService.findById(authorId).orElseThrow(()-> new AuthorNotFoundException(authorId));
 
         Book newBook = new Book(title, genre, averageRating, author);
@@ -59,7 +71,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book update(Long id, String title, String genre, double averageRating, Long authorId) {
+    public Book update(Long id, String title, String genre, Double averageRating, Long authorId) {
 
 
         Book targetBook = bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));
@@ -76,4 +88,5 @@ public class BookServiceImpl implements BookService {
     public Book findById(Long id) {
         return bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));
     }
+
 }
