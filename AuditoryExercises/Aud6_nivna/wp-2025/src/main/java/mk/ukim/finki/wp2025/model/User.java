@@ -11,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+//moras vaka da go napravis ako go pravis bez @Table(name=) ke ti javi
+//greshka palikacijata bidejki User e rezerviran zbor vo Postre
 @Table(name = "shop_user")
 public class User {
 
@@ -20,6 +22,8 @@ public class User {
     private String name;
     private String surname;
 
+    //so ova mu kazuvas deka vekje ke e kreirana many-to-many tabela od ShoppingCart,
+    //za da ne ti se kreira ushte edna tablea, go pravish vaka mappedBy= mu turas
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<ShoppingCart> carts;
 

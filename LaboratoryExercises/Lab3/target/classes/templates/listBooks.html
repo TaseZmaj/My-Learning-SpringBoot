@@ -58,24 +58,45 @@
 <h1 th:if="${error != null}" th:text="'ERROR: ' + ${error}" style="color:red"></h1>
 
 <main style="width:100vw; height:100vh; display:flex; flex-direction:row;">
-    <!--BOOKS LIST AND FORM - LEFT SIDE -->
+    <!--BOOKS LIST AND FORMS - LEFT SIDE -->
     <div style="display:flex; flex-direction:column; height:100%; width:70%; padding-left:25px" class="right">
-        <form action="" method="GET">
-            <h2>Search for books:</h2>
-            <label for="searchQuery">
-                <span>Book title: </span>
-                <input type="text" name="searchQuery" id="searchQuery" th:value="${searchQuery}">
-            </label>
-            <br/>
-            <label for="rating">
-                <span>Choose rating: </span>
-                <input type="number" min="1" max="5" name="rating" id="rating" th:value="${rating == 0.0 ? null : rating}">
-            </label>
-            <br/>
-            <label for="search">
-                <input type="submit" id="search">
-            </label>
-        </form>
+        <div style="width:100%; display:flex; flex-direction:row;">
+            <div style="flex-grow: 1;">
+                <form action="" method="GET" style="width:fit-content;">
+                <h2>Search for books:</h2>
+                <label for="searchQuery">
+                    <span>Book title: </span>
+                    <input type="text" name="searchQuery" id="searchQuery" th:value="${searchQuery}">
+                </label>
+                <br/>
+                <label for="rating">
+                    <span>Choose rating: </span>
+                    <input type="number" min="1" max="5" name="rating" id="rating" th:value="${rating == 0.0 ? null : rating}">
+                </label>
+                <br/>
+                <label for="search">
+                    <input type="submit" id="search">
+                </label>
+            </form>
+            </div>
+            <div style="flex-grow: 1; padding-left: 20px;">
+                <form action="" method="GET" style="width:fit-content;">
+                <h2>Search for books (By Author):</h2>
+                    <div>
+                        <label for="authorId">Author</label><br/>
+                        <select id="authorId" name="authorId" required>
+                            <option th:each="a : ${authors}"
+                                    th:value="${a.getId()}"
+                                    th:text="${a.getName() + ' ' + a.getSurname()}">
+                        </select>
+                    </div>
+                    <label for="search">
+                        <input type="submit" id="searchByAuthor">
+                    </label>
+                </form>
+            </div>
+        </div>
+
         <div style="display:flex; flex-direction:row">
             <div style="height:100%; width:85%; ">
                 <form action="/bookReservation" method="POST">
@@ -137,8 +158,8 @@
 
                     </li>
                 </ul>
-                <div>
-                    <a href="/books/book-form" style="margin-left:87px; text-decoration:none; color:white; font-weight:bold; border:none; border-radius:5px; background-color:lightgreen; padding:3px;">Add book</a>
+                <div style="display:flex; align-items:center; justify-content:center;  box-sizing:border-box; margin-left:87px;  font-weight:bold; border:none; border-radius:5px; background-color:lightgreen; padding:3px;">
+                    <a href="/books/book-form" style="text-decoration:none; color:white;">Add book</a>
                 </div>
             </div>
         </div>

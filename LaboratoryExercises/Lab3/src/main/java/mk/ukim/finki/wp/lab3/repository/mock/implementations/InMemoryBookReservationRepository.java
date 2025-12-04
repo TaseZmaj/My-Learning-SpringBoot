@@ -1,8 +1,8 @@
-package mk.ukim.finki.wp.lab3.repository.implementations;
+package mk.ukim.finki.wp.lab3.repository.mock.implementations;
 
 import mk.ukim.finki.wp.lab3.bootstrap.DataHolder;
 import mk.ukim.finki.wp.lab3.model.BookReservation;
-import mk.ukim.finki.wp.lab3.repository.BookReservationRepository;
+import mk.ukim.finki.wp.lab3.repository.mock.BookReservationRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

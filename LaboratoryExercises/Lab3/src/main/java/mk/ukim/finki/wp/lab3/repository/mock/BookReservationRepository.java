@@ -1,4 +1,4 @@
-package mk.ukim.finki.wp.lab3.repository;
+package mk.ukim.finki.wp.lab3.repository.mock;
 
 import mk.ukim.finki.wp.lab3.model.BookReservation;
 

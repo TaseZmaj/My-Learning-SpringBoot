@@ -1,10 +1,11 @@
 package mk.ukim.finki.wp.lab3.service.implementations;
 
 import lombok.AllArgsConstructor;
+import mk.ukim.finki.wp.lab3.model.exceptions.AuthorNotFoundException;
 import mk.ukim.finki.wp.lab3.model.exceptions.BookNotFoundException;
 import mk.ukim.finki.wp.lab3.model.Author;
 import mk.ukim.finki.wp.lab3.model.Book;
-import mk.ukim.finki.wp.lab3.repository.BookRepository;
+import mk.ukim.finki.wp.lab3.repository.jpa.BookRepository;
 import mk.ukim.finki.wp.lab3.service.AuthorService;
 import mk.ukim.finki.wp.lab3.service.BookService;
 import org.springframework.stereotype.Service;
@@ -33,24 +34,32 @@ public class BookServiceImpl implements BookService {
         if(text.isEmpty()) {
             return bookRepository.findAll();
         }
-        return bookRepository.searchBooks(text, rating);
+        return bookRepository.findByTitleContainingIgnoreCaseAndAverageRatingGreaterThanEqual(text, rating);
     }
 
     @Override
-    public void delete(long id) {
-        this.bookRepository.delete(id);
+    public List<Book> searchBooks(Long authorId) {
+        if(authorId == null) {
+            throw new IllegalArgumentException("Author id must not be null");
+        }
+        return bookRepository.findByAuthor_Id(authorId);
     }
 
     @Override
-    public Book create(String title, String genre, double averageRating, long authorId) {
-        Author author = authorService.findById(authorId);
+    public void delete(Long id) {
+        this.bookRepository.deleteById(id);
+    }
+
+    @Override
+    public Book create(String title, String genre, double averageRating, Long authorId) {
+        Author author = authorService.findById(authorId).orElseThrow(()-> new AuthorNotFoundException(authorId));
 
         Book newBook = new Book(title, genre, averageRating, author);
         return bookRepository.save(newBook);
     }
 
     @Override
-    public Book update(long id, String title, String genre, double averageRating, long authorId) {
+    public Book update(Long id, String title, String genre, double averageRating, Long authorId) {
 
 
         Book targetBook = bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));
@@ -58,13 +67,13 @@ public class BookServiceImpl implements BookService {
         targetBook.setTitle(title);
         targetBook.setGenre(genre);
         targetBook.setAverageRating(averageRating);
-        targetBook.setAuthor(authorService.findById(authorId));
+        targetBook.setAuthor(authorService.findById(authorId).orElseThrow(()-> new AuthorNotFoundException(authorId)));
 
         return bookRepository.save(targetBook);
     }
 
     @Override
-    public Book findById(long id) {
+    public Book findById(Long id) {
         return bookRepository.findById(id).orElseThrow(()-> new BookNotFoundException(id));
     }
 }

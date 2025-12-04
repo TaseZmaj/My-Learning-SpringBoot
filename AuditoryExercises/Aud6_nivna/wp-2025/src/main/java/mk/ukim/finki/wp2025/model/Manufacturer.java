@@ -16,7 +16,7 @@ public class Manufacturer {
     private Long id;
     private String name;
 
-    @Column(name = "manufacturer_address")
+    @Column(name = "manufacturer_address" )
     private String address;
 
     public Manufacturer(String name, String address) {

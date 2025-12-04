@@ -1,7 +1,7 @@
 package mk.ukim.finki.wp.lab3.service.implementations;
 
 import mk.ukim.finki.wp.lab3.model.BookReservation;
-import mk.ukim.finki.wp.lab3.repository.BookReservationRepository;
+import mk.ukim.finki.wp.lab3.repository.mock.BookReservationRepository;
 import mk.ukim.finki.wp.lab3.service.BookReservationService;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class BookReservationServiceImpl implements BookReservationService {
     }
 
     @Override
-    public BookReservation placeReservation(String bookTitle, String readerName, String readerAddress, long numberOfCopies) {
+    public BookReservation placeReservation(String bookTitle, String readerName, String readerAddress, Long numberOfCopies) {
         if(bookTitle == null || bookTitle.isEmpty()){
             throw new IllegalArgumentException("Book Title cannot be null or empty");
         }

@@ -7,8 +7,9 @@ import java.util.List;
 public interface BookService {
     List<Book> listAll();
     List<Book> searchBooks(String text, double rating);
-    void delete(long id);
-    Book create(String title, String genre, double averageRating, long authorId);
-    Book update(long id, String title, String genre, double averageRating, long authorId);
-    Book findById(long id);
+    List<Book> searchBooks(Long authorId);
+    void delete(Long id);
+    Book create(String title, String genre, double averageRating, Long authorId);
+    Book update(Long id, String title, String genre, double averageRating, Long authorId);
+    Book findById(Long id);
 }

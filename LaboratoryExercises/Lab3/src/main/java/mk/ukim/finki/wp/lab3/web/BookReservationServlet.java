@@ -55,7 +55,7 @@ public class BookReservationServlet extends HttpServlet {
             session.setAttribute("numCopies", numCopies);
             session.setAttribute("userIpAddress", userIpAddress);
 
-            bookReservationService.placeReservation(bookTitle, readerName, readerAddress, Integer.parseInt(numCopies));
+            bookReservationService.placeReservation(bookTitle, readerName, readerAddress, Long.parseLong(numCopies));
         }catch(Exception e){
             resp.sendRedirect("/?errorMessage=invalid_input" + e.getLocalizedMessage());
         }
