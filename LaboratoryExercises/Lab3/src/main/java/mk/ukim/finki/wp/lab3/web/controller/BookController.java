@@ -21,17 +21,20 @@ public class BookController {
     private final AuthorService authorService;
     private final BookReservationService bookReservationService;
 
-    //Mora da si postoi kako metod bez (params={}) za da moze da raboti samo ova /books
     @GetMapping
     public String getAllBooks(
-            HttpServletRequest req,
+            @RequestParam(required = false) String searchQuery,
+            @RequestParam(required = false) Double averageRating,
+            @RequestParam(required = false) Long authorId,
             @RequestParam(required = false) String error,
-            Model model) {
-
+            HttpServletRequest req,
+            Model model){
 
         if (error != null) model.addAttribute("error", error);
 
-        model.addAttribute("booksList", bookService.listAll());
+        List<Book> books = bookService.find(searchQuery, averageRating, authorId);
+
+        model.addAttribute("booksList", books);
         model.addAttribute("authors", authorService.findAll());
         model.addAttribute("searchQuery", "");
         model.addAttribute("rating", 0.0);
@@ -41,53 +44,73 @@ public class BookController {
         return "listBooks";
     }
 
-    //Se koristi za filtriranje preku searchQuery i rating
-    @GetMapping(params={"searchQuery", "rating"})
-    public String getBooksPage(
-            HttpServletRequest req,
-            @RequestParam(required = false, defaultValue= "") String searchQuery,
-            @RequestParam(required = false, defaultValue= "0.0") String rating,
-            @RequestParam(required = false) String error,
-            Model model){
-        if(error != null){
-            model.addAttribute("error", error);
-        }
-
-        List<Book> books = bookService.searchBooks(searchQuery, Double.parseDouble(rating));
-
-
-        model.addAttribute("booksList", books);
-        model.addAttribute("authors", authorService.findAll());
-        model.addAttribute("searchQuery", searchQuery);
-        model.addAttribute("rating", rating);
-        model.addAttribute("reservations", bookReservationService.listAll());
-        model.addAttribute("userIpAddress", req.getRemoteAddr());
-
-        return "listBooks";
-    }
-
-    //Se koristi za filtriranje preku Avtori
-    @GetMapping(params="authorId")
-    public String getBooksPage(
-            @RequestParam(required = false) String error,
-            @RequestParam(required = false, defaultValue= "") String authorId,
-            HttpServletRequest req,
-            Model model){
-
-        List<Book> books = bookService.searchBooks(Long.parseLong(authorId));
-
-        if(error != null){
-            model.addAttribute("error", error);
-        }
-        model.addAttribute("booksList", books);
-        model.addAttribute("authors", authorService.findAll());
-        model.addAttribute("searchQuery", "");
-        model.addAttribute("rating", 0.0);
-        model.addAttribute("reservations", bookReservationService.listAll());
-        model.addAttribute("userIpAddress", req.getRemoteAddr());
-
-        return "listBooks";
-    }
+    //Mora da si postoi kako metod bez (params={}) za da moze da raboti samo ova /books
+//    @GetMapping
+//    public String getAllBooks(
+//            @RequestParam(required = false) String error,
+//            HttpServletRequest req,
+//            Model model) {
+//
+//
+//        if (error != null) model.addAttribute("error", error);
+//
+//        model.addAttribute("booksList", bookService.listAll());
+//        model.addAttribute("authors", authorService.findAll());
+//        model.addAttribute("searchQuery", "");
+//        model.addAttribute("rating", 0.0);
+//        model.addAttribute("reservations", bookReservationService.listAll());
+//        model.addAttribute("userIpAddress", req.getRemoteAddr());
+//
+//        return "listBooks";
+//    }
+//
+//    //Se koristi za filtriranje preku searchQuery i rating
+//    @GetMapping(params={"searchQuery", "rating"})
+//    public String getBooksPage(
+//            @RequestParam(required = false, defaultValue= "") String searchQuery,
+//            @RequestParam(required = false, defaultValue= "0.0") String rating,
+//            @RequestParam(required = false) String error,
+//            HttpServletRequest req,
+//            Model model){
+//        if(error != null){
+//            model.addAttribute("error", error);
+//        }
+//
+//        List<Book> books = bookService.searchBooks(searchQuery, Double.parseDouble(rating));
+//
+//
+//        model.addAttribute("booksList", books);
+//        model.addAttribute("authors", authorService.findAll());
+//        model.addAttribute("searchQuery", searchQuery);
+//        model.addAttribute("rating", rating);
+//        model.addAttribute("reservations", bookReservationService.listAll());
+//        model.addAttribute("userIpAddress", req.getRemoteAddr());
+//
+//        return "listBooks";
+//    }
+//
+//    //Se koristi za filtriranje preku Avtori
+//    @GetMapping(params="authorId")
+//    public String getBooksPage(
+//            @RequestParam(required = false) String error,
+//            @RequestParam(required = false, defaultValue= "") String authorId,
+//            HttpServletRequest req,
+//            Model model){
+//
+//        List<Book> books = bookService.searchBooks(Long.parseLong(authorId));
+//
+//        if(error != null){
+//            model.addAttribute("error", error);
+//        }
+//        model.addAttribute("booksList", books);
+//        model.addAttribute("authors", authorService.findAll());
+//        model.addAttribute("searchQuery", "");
+//        model.addAttribute("rating", 0.0);
+//        model.addAttribute("reservations", bookReservationService.listAll());
+//        model.addAttribute("userIpAddress", req.getRemoteAddr());
+//
+//        return "listBooks";
+//    }
 
 
     @PostMapping("/delete/{id}")

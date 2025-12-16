@@ -16,12 +16,12 @@ public class Book {
     private Long id;
     String title;
     String genre;
-    double averageRating;
+    Double averageRating;
 
     @ManyToOne
     private Author author;
 
-    public Book(String title, String genre, double averageRating, Author author) {
+    public Book(String title, String genre, Double averageRating, Author author) {
         this.title = title;
         this.genre = genre;
         this.averageRating = averageRating;
