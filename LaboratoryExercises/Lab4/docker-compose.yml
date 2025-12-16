@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:17.4
+    restart: always
+    environment:
+      POSTGRES_USER: Stefan
+      POSTGRES_PASSWORD: Stefan
+      POSTGRES_DB: books
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  pgdata:
