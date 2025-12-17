@@ -6,6 +6,9 @@ import mk.ukim.finki.wp.lab4.model.Book;
 import mk.ukim.finki.wp.lab4.service.AuthorService;
 import mk.ukim.finki.wp.lab4.service.BookReservationService;
 import mk.ukim.finki.wp.lab4.service.BookService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +18,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/books")
 @AllArgsConstructor
+@EnableWebSecurity
+@EnableMethodSecurity
 public class BookController {
 
     private final BookService bookService;
@@ -22,7 +27,7 @@ public class BookController {
     private final BookReservationService bookReservationService;
 
     @GetMapping
-    public String getAllBooks(
+    public String getAllBooksPage(
             @RequestParam(required = false) String searchQuery,
             @RequestParam(required = false) Double averageRating,
             @RequestParam(required = false) Long authorId,
@@ -40,6 +45,7 @@ public class BookController {
         model.addAttribute("rating", 0.0);
         model.addAttribute("reservations", bookReservationService.listAll());
         model.addAttribute("userIpAddress", req.getRemoteAddr());
+        model.addAttribute("username", req.getRemoteUser());
 
         return "listBooks";
     }
@@ -112,32 +118,7 @@ public class BookController {
 //        return "listBooks";
 //    }
 
-
-    @PostMapping("/delete/{id}")
-    public String deleteBook(@PathVariable Long id){
-        bookService.delete(id);
-        return "redirect:/books";
-    }
-
-    @PostMapping("/add")
-    public String saveBook(@RequestParam String title,
-                           @RequestParam String genre,
-                           @RequestParam Double averageRating,
-                           @RequestParam Long authorId) {
-        bookService.create(title, genre, averageRating, authorId);
-        return "redirect:/books";
-    }
-
-    @PostMapping("edit/{bookId}")
-    public String editBook(@PathVariable Long bookId,
-                           @RequestParam String title,
-                           @RequestParam String genre,
-                           @RequestParam Double averageRating,
-                           @RequestParam Long authorId){
-        bookService.update(bookId, title, genre, averageRating, authorId);
-        return "redirect:/books";
-    }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/book-form/{id}")
     public String getEditBookForm(@PathVariable Long id, Model model){
         model.addAttribute("bookId", id);
@@ -151,9 +132,38 @@ public class BookController {
         return "book-form";
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/book-form")
-    public String getAddBookPage(Model model){
+    public String getAddBookForm(Model model){
         model.addAttribute("authors", authorService.findAll());
         return "book-form";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/delete/{id}")
+    public String deleteBook(@PathVariable Long id){
+        bookService.delete(id);
+        return "redirect:/books";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/add")
+    public String saveBook(@RequestParam String title,
+                           @RequestParam String genre,
+                           @RequestParam Double averageRating,
+                           @RequestParam Long authorId) {
+        bookService.create(title, genre, averageRating, authorId);
+        return "redirect:/books";
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("edit/{bookId}")
+    public String editBook(@PathVariable Long bookId,
+                           @RequestParam String title,
+                           @RequestParam String genre,
+                           @RequestParam Double averageRating,
+                           @RequestParam Long authorId){
+        bookService.update(bookId, title, genre, averageRating, authorId);
+        return "redirect:/books";
     }
 }

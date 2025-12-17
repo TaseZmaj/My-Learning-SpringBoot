@@ -5,10 +5,14 @@
     <title>Book Reservation - Welcome and choose a Book</title>
     <style>
         body {
-            width: 100vw;
+            width: 100%;
+            height: 100%;
+            background-color:whitesmoke;
+            /*box-sizing: border-box;*/
             margin: 10px;
             font-family: Arial, sans-serif;
             overflow-x:hidden;
+            padding-bottom:20px;
         }
         h1 {
             color: #333;
@@ -35,6 +39,8 @@
             padding:5px;
             cursor: pointer;
             text-decoration:none;
+            background-color: rgba(0,0,0, 0.8);
+            /*color: whitesmoke;*/
         }
         .editBtn{
             background-color: #ffca28;
@@ -51,8 +57,23 @@
     </style>
 </head>
 <body>
+<div  xmlns:th="http://www.thymeleaf.org"   xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <header>
-    <h1>Welcome to our Book Reservation App</h1>
+    <div style="display:flex; flex-direction:row; width:100%; align-items:center;">
+        <h1>Welcome to our Book Reservation App</h1>
+        <div style="margin-left:auto; margin-right:100px;">
+            <h2>User:</h2>
+            <p th:if="${username != null && !username.isEmpty()}" th:text="${username}"></p>
+            <form th:if="${username != null && !username.isEmpty()}" action="/logout" method="get">
+                <button type="submit">Logout</button>
+            </form>
+
+            <form th:if="${username == null || username.isEmpty()}" action="/login" method="get">
+                <button type="submit">Login</button>
+            </form>
+
+        </div>
+    </div>
 </header>
 
 <h1 th:if="${error != null}" th:text="'ERROR: ' + ${error}" style="color:red"></h1>
@@ -89,27 +110,11 @@
                 </label>
             </form>
             </div>
-<!--            <div style="flex-grow: 1; padding-left: 20px;">-->
-<!--                <form action="" method="GET" style="width:fit-content;">-->
-<!--                <h2>Search for books (By Author):</h2>-->
-<!--                    <div>-->
-<!--                        <label for="authorId">Author</label><br/>-->
-<!--                        <select id="authorId" name="authorId" required>-->
-<!--                            <option th:each="a : ${authors}"-->
-<!--                                    th:value="${a.getId()}"-->
-<!--                                    th:text="${a.getName() + ' ' + a.getSurname()}">-->
-<!--                        </select>-->
-<!--                    </div>-->
-<!--                    <label for="search">-->
-<!--                        <input type="submit" id="searchByAuthor">-->
-<!--                    </label>-->
-<!--                </form>-->
-<!--            </div>-->
         </div>
 
         <div style="display:flex; flex-direction:row">
             <div style="height:100%; width:85%; ">
-                <form action="/bookReservation" method="POST">
+                <form style="padding-bottom:20px;" action="/bookReservation" method="POST">
                     <h2>Choose a book:</h2>
                     <ul style="list-style-type:none;">
                         <li th:each="book : ${booksList}" class="book-option" style="padding-top: 7px; padding-bottom: 7px;">
@@ -154,12 +159,12 @@
                 <ul style="list-style-type:none; margin-top:30px;">
                     <li th:each="book : ${booksList}" style="height:20px; padding-top: 7px; padding-bottom: 7px; margin: 12px 0;">
                         <div style="width:100%; height:100%; display:flex; flex-direction:row; align-items:center; justify-content:center;">
-                            <div class="buttonForm" style="">
+                            <div sec:authorize="hasRole('ADMIN')" class="buttonForm" style="">
                                 <form th:action="@{'/books/book-form/{id}' (id=${book.getId()})}" method="GET" style="width:100%; height:100%; margin:0; padding:5px;">
                                     <button class="editBtn" type="submit">Edit</button>
                                 </form>
                             </div>
-                            <div class="buttonForm">
+                            <div sec:authorize="hasRole('ADMIN')" class="buttonForm">
                                 <form th:action="@{'/books/delete/{id}' (id=${book.getId()})}" method="POST" style="width:100%; height:100%; margin:0; padding:5px;">
                                     <button class="deleteBtn" type="submit">Delete</button>
                                 </form>
@@ -168,7 +173,7 @@
 
                     </li>
                 </ul>
-                <div style="display:flex; align-items:center; justify-content:center;  box-sizing:border-box; margin-left:87px;  font-weight:bold; border:none; border-radius:5px; background-color:lightgreen; padding:3px;">
+                <div sec:authorize="hasRole('ADMIN')" style="display:flex; align-items:center; justify-content:center;  box-sizing:border-box; margin-left:87px;  font-weight:bold; border:none; border-radius:5px; background-color:lightgreen; padding:3px;">
                     <a href="/books/book-form" style="text-decoration:none; color:white;">Add book</a>
                 </div>
             </div>

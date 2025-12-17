@@ -1,0 +1,28 @@
+<html lang="en">
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+        <div>
+            <form action="/login" method="POST" style="display:flex; flex-direction: column; gap:5px;">
+                <label for="username">
+                    Username:
+                    <input type="text" name="username" id="username" placeholder="Username..."/>
+                </label>
+                <label for="password">
+                    Password:
+                    <input type="password" name="password" id="password" placeholder="Password...">
+                </label>
+
+                <div>
+                    <p style="color:tomato;" th:if="${param.error != null}" th:text="${param.error}"></p>
+                </div>
+
+                <button type="submit" id="submit">
+                    Sign in
+                </button>
+            </form>
+
+        </div>
+    </body>
+</html>
